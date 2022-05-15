@@ -10,10 +10,6 @@ pool:
   vmImage: ubuntu-latest
 strategy:
   matrix:
-    Python27:
-      python.version: '2.7'
-    Python35:
-      python.version: '3.5'
     Python36:
       python.version: '3.6'
     Python37:
@@ -30,14 +26,9 @@ steps:
     pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+- script: python test.py
 
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: "JaCoCo"
-    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
-    reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
-    failIfCoverageEmpty: true
+- script: |
+    python -m pip install flake8
+    flake8 .
+  displayName: 'Run lint tests'
